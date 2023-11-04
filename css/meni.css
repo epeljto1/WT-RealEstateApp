@@ -1,0 +1,23 @@
+body
+{
+    background-color: #fdf1d3;
+}
+ul
+{
+    list-style: none;
+    padding: 1px 1px;
+}
+ul li
+{
+    display: inline;
+    padding: 10px;
+}
+ul li a
+{
+    text-decoration: none;
+}
+
+ul li a:hover
+{
+    color: #ff9900;
+}
