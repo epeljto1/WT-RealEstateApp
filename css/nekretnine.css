@@ -1,0 +1,33 @@
+body
+{
+    background-color: #fdf1d3;
+    margin: 0 0;
+}
+
+iframe
+{
+    width: 100%;
+    height: 50px;
+    border: none;
+}
+
+#stan h1
+{
+    margin: auto;
+    padding: 0 15px;
+    font-size: 30px;
+}
+
+#kuca h1
+{
+    margin: auto;
+    padding: 0 15px;
+    font-size: 30px;
+}
+
+#pp h1
+{
+    margin: auto;
+    padding: 0 15px;
+    font-size: 30px;
+}
