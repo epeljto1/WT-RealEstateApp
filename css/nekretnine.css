@@ -2,6 +2,7 @@ body
 {
     background-color: #fdf1d3;
     margin: 0 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 iframe
@@ -11,23 +12,60 @@ iframe
     border: none;
 }
 
-#stan h1
+h3
 {
-    margin: auto;
-    padding: 0 15px;
-    font-size: 30px;
+    margin: 20px 50px;
 }
 
-#kuca h1
+#stan
 {
-    margin: auto;
-    padding: 0 15px;
-    font-size: 30px;
+    margin: 0 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    row-gap: 20px;
+    column-gap: 20px;
 }
 
-#pp h1
+#stan div
 {
-    margin: auto;
-    padding: 0 15px;
-    font-size: 30px;
+    background-color: white;
+    width: 300px;
 }
+
+#stan div img
+{
+    margin: 15px 25px;
+    width: 250px;
+    height: 200px;
+}
+
+#stan div p.naziv
+{
+    margin: 2px 25px 2px;
+}
+
+#stan div p.kvadratura
+{
+    margin: 0 25px 2px;
+}
+
+#stan div p.cijena
+{
+    text-align: right;
+    margin-top: 0;
+    margin-right: 25px;
+}
+
+button
+{
+    background-color: #fdf1d3;
+    margin: 8px 115px 8px;
+    height: 30px;
+    width: 70px;
+}
+
+button:hover
+{
+    background-color: #ff9900;
+}
+
