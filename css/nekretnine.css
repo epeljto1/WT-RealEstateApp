@@ -10,6 +10,8 @@ iframe
     width: 100%;
     height: 50px;
     border: none;
+    position: sticky;
+    top: 0;
 }
 
 h3
@@ -32,24 +34,24 @@ h3
     width: 300px;
 }
 
-#stan div img
+div img
 {
     margin: 15px 25px;
     width: 250px;
     height: 200px;
 }
 
-#stan div p.naziv
+div p.naziv
 {
     margin: 2px 25px 2px;
 }
 
-#stan div p.kvadratura
+div p.kvadratura
 {
     margin: 0 25px 2px;
 }
 
-#stan div p.cijena
+div p.cijena
 {
     text-align: right;
     margin-top: 0;
@@ -69,3 +71,32 @@ button:hover
     background-color: #ff9900;
 }
 
+#kuca
+{
+    margin: 0px 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    row-gap: 20px;
+    column-gap: 20px;  
+}
+
+#kuca div
+{
+    background-color: powderblue;
+    width: 300px;
+}
+
+#pp
+{
+    margin: 0px 50px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    row-gap: 20px;
+    column-gap: 20px;  
+}
+
+#pp div
+{
+    background-color: green;
+    width: 300px;
+}
