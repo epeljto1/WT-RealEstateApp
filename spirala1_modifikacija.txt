@@ -1,0 +1,20 @@
+Modifikacija profil.html je urađena korištenjem
+@media query u css-u koji omogućava da se sadržaj 
+adaptira različitim uslovima kao što je upravo širina ekrana.
+
+U profil.css je dodano 
+@media only screen and (min-width: 500px)
+{
+    img
+    {
+        float: left;
+    }
+}
+
+Ovaj upit omogućava da se slika nalazi lijevo od korisničkih podataka
+ukoliko je širina ekrana >= 500px.
+
+Chrome browser se ne može skalirati tako da širina prozora bude manja od 500px pa
+se slika uvijek nalazi lijevo ukoliko se on koristi.
+
+Ovo je testirano još na browser-u Microsoft Edge te na W3Schools i radi kako treba.
