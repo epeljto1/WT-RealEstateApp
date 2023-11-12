@@ -1,0 +1,53 @@
+Za validaciju HTML i CSS datoteka je korišten W3C Markup Validation Service.
+
+- meni.html
+
+U ovoj datoteci nema errora.
+
+- meni.css
+
+U ovoj datoteci nema errora.
+
+- profil.html
+
+Error u ovoj datoteci je da je scrolling atribut iframe elementa zastario i da se
+koristi css za njega. 
+Rješenje za ovo je da je povećana širina iframe-a i postavljen overflow-x: hidden u css-u.
+
+- profil.css
+
+U ovoj datoteci nema errora.
+
+- nekretnine.html
+
+Prvi error u ovoj datoteci je također za scrolling atribut i popravljen je na
+isti način.
+
+Drugi error je da se element button ne smije pojaviti kao descendant elementa a.
+Ovo je popravljeno na način da je umjesto elementa a stavljen element form i dodan tip za button 'submit'.
+
+- nekretnine.css
+
+U ovoj datoteci nema errora.
+
+- detalji.html
+
+Error također za scrolling atribut.
+
+- detalji.css
+
+U ovoj datoteci nema errora.
+
+- prijava.html
+
+Error također za scrolling atribut.
+
+- prijava.css
+
+U ovoj datoteci nema errora.
+
+
+
+
+
+
