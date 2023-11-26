@@ -49,13 +49,13 @@ div p.naziv
 
 div p.kvadratura
 {
-    margin: 0 25px 2px;
+    margin: 20px 25px 2px;
 }
 
 div p.cijena
 {
     text-align: right;
-    margin-top: 0;
+    margin-top: 20px;
     margin-right: 25px;
 }
 
