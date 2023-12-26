@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Nekretnine - Nekretnine</title>
+        <link rel="stylesheet" type="text/css" href="../css/nekretnine.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <iframe src="meni.html"></iframe>
+        <form id="pretragaForma">
+            <label for="minCijena">Min. Cijena:</label>
+            <input type="text" id="minCijena" name="minCijena">
+        
+            <label for="maxCijena">Max. Cijena:</label>
+            <input type="text" id="maxCijena" name="maxCijena">
+        
+            <label for="minKvadratura">Min. Kvadratura:</label>
+            <input type="text" id="minKvadratura" name="minKvadratura">
+        
+            <label for="maxKvadratura">Max. Kvadratura:</label>
+            <input type="text" id="maxKvadratura" name="maxKvadratura">
+        
+            <button type="button">Pretraga</button>
+        </form>
+        <h3>STAN</h3>
+        <div id="stan">
+        </div>
+        <h3>KUĆA</h3>
+        <div id="kuca">
+        </div>
+        <h3>POSLOVNI PROSTOR</h3>
+        <div id="pp">
+        </div>
+        <script src="../scripts/SpisakNekretnina.js"></script>
+        <script src="../scripts/nekretnine.js"></script>
+    </body>
+</html>

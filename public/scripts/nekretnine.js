@@ -1,6 +1,11 @@
 function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
     // pozivanje metode za filtriranje
-    let nekretnine = instancaModula.filtrirajNekretnine({ tip_nekretnine: tip_nekretnine });
+
+    let kriterij = {
+        tip_nekretnine: tip_nekretnine
+    };
+    
+    let nekretnine = instancaModula.filtrirajNekretnine(kriterij);
     // iscrtavanje elemenata u divReferenca element
      divReferenca.innerHTML = "";
     for(let i=0;i<nekretnine.length;i++) {
