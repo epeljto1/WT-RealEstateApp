@@ -20,6 +20,27 @@ const PoziviAjax = (() => {
         xhttp.send();  
     }
 
+    function impl_getNekretnine(fnCallback)
+    {
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET","http://localhost:3000/nekretnine",true);
+        xhttp.onreadystatechange = function()
+        {
+            if(xhttp.readyState==4 && xhttp.status==200)
+            {
+                const data = JSON.parse(xhttp.responseText);
+                fnCallback(null,data);
+            }
+            else if (xhttp.readyState==4)
+            {
+                const error = JSON.parse(xhttp.responseText);
+                fnCallback(error,null);
+            }
+        }
+        xhttp.send();
+    }
+
     function impl_postLogin(username, password,fnCallback) {
         let xhttp = new XMLHttpRequest();
     
@@ -54,7 +75,7 @@ const PoziviAjax = (() => {
                 fnCallback(null,data);
                 vratiMeni(true);
             }
-            else if(xhttp.status.readyState==4)
+            else if(xhttp.readyState==4)
             {
                 const error = JSON.parse(xhttp.responseText);
                 fnCallback(error,null);
@@ -87,6 +108,7 @@ const PoziviAjax = (() => {
     return {
         postLogin: impl_postLogin,
         postLogout: impl_postLogout,
-        getKorisnik: impl_getKorisnik
+        getKorisnik: impl_getKorisnik,
+        getNekretnine: impl_getNekretnine
     };
 })();
