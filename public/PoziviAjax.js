@@ -10,7 +10,6 @@ const PoziviAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);
                 fnCallback(null,data);
-                updateMeni(true);
             }
             else if(xhttp.status==4){
                 const error = JSON.parse(xhttp.responseText);
@@ -96,7 +95,6 @@ const PoziviAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);
                 fnCallback(null,data);
-                window.location.href="http://localhost:3000/nekretnine.html";
             }
             else if(xhttp.readyState==4){
                 const error = JSON.parse(xhttp.responseText);
@@ -117,7 +115,6 @@ const PoziviAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);
                 fnCallback(null,data);
-                vratiMeni(true);
             }
             else if(xhttp.readyState==4)
             {
@@ -126,27 +123,6 @@ const PoziviAjax = (() => {
             }
         }
         xhttp.send();
-    }
-
-    function updateMeni(login)
-    {
-        const prijava = document.getElementById("prijava");
-        const profil = document.getElementById("profil");
-        if(login && prijava && profil) {
-        prijava.innerHTML = '<a>Odjava</a>';
-        profil.style.display = 'inline';
-        }
-    }
-
-    function vratiMeni(logout)
-    {
-        const odjava = document.getElementById("prijava");
-        const profil = document.getElementById("profil");
-        if(logout && odjava && profil)
-        {
-          odjava.innerHTML = '<a href="prijava.html" target="_blank">Prijava</a>';
-          profil.style.display = 'none';
-        }
     }
 
     return {
