@@ -165,6 +165,19 @@ app.get('/nekretnine',function(req,res){
     })
 })
 
+app.post('/marketing/nekretnine',function(req,res){
+    res.status(200).send();
+})
+
+app.post('/marketing/nekretnine/:id',function(req,res){
+    res.status(200).send();
+})
+
+app.post('/marketing/osvjezi',function(req,res){
+    res.status(200).json({"nizNekretnina":[
+    ]})
+})
+
 app.listen(port,function(){
     console.log("Server listening on PORT",port);
 });
