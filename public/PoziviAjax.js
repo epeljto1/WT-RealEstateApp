@@ -30,7 +30,6 @@ const PoziviAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);
                 fnCallback(null,data);
-                updateMeni(true);
             }
             else if(xhttp.status==4){
                 const error = JSON.parse(xhttp.responseText);
