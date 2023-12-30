@@ -1,3 +1,6 @@
+let novaListaStanova = [];
+let novaListaKuca = [];
+let novaListaPpa = [];
 function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
     // pozivanje metode za filtriranje
     let min_cijena = document.getElementById("minCijena").value;
@@ -21,6 +24,12 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
     };
     
     let nekretnine = instancaModula.filtrirajNekretnine(kriterij);
+    if(kriterij.tip_nekretnine==="Stan") 
+    novaListaStanova = [...nekretnine];
+    else if (kriterij.tip_nekretnine==="Kuća")
+    novaListaKuca = [...nekretnine];
+    else if (kriterij.tip_nekretnine==="Poslovni prostor")
+    novaListaPpa = [...nekretnine];
     // iscrtavanje elemenata u divReferenca element
      divReferenca.innerHTML = "";
     for(let i=0;i<nekretnine.length;i++) {
@@ -47,9 +56,29 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
         button.innerText = "DETALJI";
         form.appendChild(button);
         div.appendChild(form);
+        const pretraga = document.createElement("div");
+        pretraga.id = `pretrage-${nekretnine[i].id}`;
+        pretraga.innerText = "PRETRAGE:";
+        div.appendChild(pretraga);
+        const klik = document.createElement("div");
+        klik.id = `klikovi-${nekretnine[i].id}`;
+        klik.innerText = "KLIKOVI:";
+        div.appendChild(klik);
         divReferenca.appendChild(div);
     }
 }
+
+function razliciti(niz1,niz2)
+{
+    const pom1 = niz1.sort();
+    const pom2 = niz2.sort();
+    if(pom1.length!=pom2.length) return true;
+    for(let i=0;i<pom1.length;i++)
+    if(pom1[i]!==pom2[i]) return true;
+    return false;
+}
+
+let listaNekretnina = [];
 
 function filtriraj()
 {
@@ -63,8 +92,19 @@ function filtriraj()
     spojiNekretnine(divStan,nekretnine,"Stan");
     spojiNekretnine(divKuca, nekretnine, "Kuća");
     spojiNekretnine(divPp, nekretnine, "Poslovni prostor");
+    const novaLista = [...novaListaStanova,...novaListaKuca,...novaListaPpa];
+    const arr1 = listaNekretnina.map(obj => obj.id);
+    const arr2 = novaLista.map(obj => obj.id);
+    if(razliciti(arr1,arr2))
+    MarketingAjax.novoFiltriranje(novaLista);
+    else
+    {
+        Pom.filtriranje(novaLista);
+    }
+    const divNek = document.getElementById("divNekretnine");
+    MarketingAjax.osvjeziPretrage(divNek);
+    listaNekretnina = novaLista;
         }
-    
     })
     
 }
@@ -86,7 +126,7 @@ const listaKorisnika = [{
     username: "username2",
 }]
 
-let listaNekretnina = [];
+
 PoziviAjax.getNekretnine(function(error,data){
     if(data) {
     listaNekretnina = data;

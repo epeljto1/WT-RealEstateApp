@@ -166,16 +166,46 @@ app.get('/nekretnine',function(req,res){
 })
 
 app.post('/marketing/nekretnine',function(req,res){
-    res.status(200).send();
+    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
+        if(err) throw err;
+        const pretrageDat = JSON.parse(data);
+        req.body.nizNekretnina.forEach((id)=>{
+            const index = pretrageDat.findIndex((item)=>item.id==id);
+            pretrageDat[index].pretrage++;
+        })
+        const updatedPretrage = JSON.stringify(pretrageDat,null,2);
+        fs.writeFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),updatedPretrage,function(err){
+            if(err) throw err;
+            res.status(200).send();
+        })
+    })
 })
 
 app.post('/marketing/nekretnine/:id',function(req,res){
     res.status(200).send();
+ 
 })
 
+let oldReq = [];
 app.post('/marketing/osvjezi',function(req,res){
-    res.status(200).json({"nizNekretnina":[
-    ]})
+    if(req.body.nizNekretnina)
+    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
+        if(err) throw err;
+        oldReq = [...req.body.nizNekretnina];
+        const pik = JSON.parse(data);
+        const filtered = pik.filter(item => req.body.nizNekretnina.includes(item.id));
+        const resData = {nizNekretnina: filtered};
+        res.status(200).json(resData);
+    })
+    else
+    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
+        console.log(oldReq);
+        if(err) throw err;
+        const pik = JSON.parse(data);
+        const filtered = pik.filter(item => oldReq.includes(item.id));
+        const resData = {nizNekretnina: filtered};
+        res.status(200).json(resData);
+    })
 })
 
 app.listen(port,function(){
