@@ -182,8 +182,18 @@ app.post('/marketing/nekretnine',function(req,res){
 })
 
 app.post('/marketing/nekretnine/:id',function(req,res){
-    res.status(200).send();
- 
+    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
+        if(err) throw err;
+        const theid = req.params.id;
+        const klikoviDat = JSON.parse(data);
+        const index = klikoviDat.findIndex((item)=>item.id==theid)
+        klikoviDat[index].klikovi++;
+        const updatedKlikovi = JSON.stringify(klikoviDat,null,2);
+        fs.writeFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),updatedKlikovi,function(err){
+            if(err) throw err;
+            res.status(200).send();
+        })
+    })
 })
 
 let oldReq = [];
@@ -199,7 +209,6 @@ app.post('/marketing/osvjezi',function(req,res){
     })
     else
     fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
-        console.log(oldReq);
         if(err) throw err;
         const pik = JSON.parse(data);
         const filtered = pik.filter(item => oldReq.includes(item.id));

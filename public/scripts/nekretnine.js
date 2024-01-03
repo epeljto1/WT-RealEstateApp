@@ -49,11 +49,10 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
         cijena.innerHTML = "<b>Cijena</b>: "+nekretnine[i].cijena+" KM";
         div.appendChild(cijena);
         const form = document.createElement("form");
-        form.action = "detalji.html";
-        form.target = "_blank";
         const button = document.createElement("button");
-        button.type = "submit";
+        button.type = "button";
         button.innerText = "DETALJI";
+        button.onclick = function() {detalji(nekretnine[i].id)};
         form.appendChild(button);
         div.appendChild(form);
         const pretraga = document.createElement("div");
@@ -64,6 +63,7 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
         klik.id = `klikovi-${nekretnine[i].id}`;
         klik.innerText = "KLIKOVI:";
         div.appendChild(klik);
+        div.id = `nekretnina-${nekretnine[i].id}`;
         divReferenca.appendChild(div);
     }
 }
@@ -101,12 +101,17 @@ function filtriraj()
     {
         Pom.filtriranje(novaLista);
     }
-    const divNek = document.getElementById("divNekretnine");
-    MarketingAjax.osvjeziPretrage(divNek);
     listaNekretnina = novaLista;
         }
     })
     
+}
+
+function detalji(nekId)
+{
+    MarketingAjax.klikNekretnina(nekId);
+    const nek = document.getElementById(`nekretnina-${nekId}`);
+    nek.style.width = "500px";
 }
 
 const divStan = document.getElementById("stan");
@@ -138,6 +143,12 @@ nekretnine.init(listaNekretnina, listaKorisnika);
 spojiNekretnine(divStan,nekretnine,"Stan");
 spojiNekretnine(divKuca, nekretnine, "Kuća");
 spojiNekretnine(divPp, nekretnine, "Poslovni prostor");
+
+
+const divNek = document.getElementById("divNekretnine");
+MarketingAjax.novoFiltriranje(listaNekretnina);
+MarketingAjax.osvjeziPretrage(divNek);
+MarketingAjax.osvjeziKlikove(divNek);
     }
 
 });
