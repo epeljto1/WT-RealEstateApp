@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
-    "klikovi": 1,
+    "klikovi": 0,
     "pretrage": 0
   },
   {
     "id": 2,
     "klikovi": 0,
-    "pretrage": 0
+    "pretrage": 6
   }
 ]

@@ -24,6 +24,7 @@ const PoziviAjax = (() => {
         let xhttp = new XMLHttpRequest();
 
         xhttp.open("PUT","http://localhost:3000/korisnik",true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.onreadystatechange = function()
         {
             if(xhttp.readyState==4 && xhttp.status==200)

@@ -15,13 +15,14 @@ const MarketingAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);  
                 const nekretnine = data.nizNekretnina;
+                console.log(nekretnine);
                 nekretnine.forEach(nekretnina => {
                     const divId = `pretrage-${nekretnina.id}`;
                     const pretrageDiv = divNekretnine.querySelector(`#${divId}`);
                     if(pretrageDiv) pretrageDiv.textContent = `PRETRAGE: ${nekretnina.pretrage}`;
                 })
             }
-            else if (xhttp.readyState == 4 && xhttp.status ==500)
+            else
             {
                 const pretrage = divNekretnine.querySelectorAll('div[id^="pretrage"]');
                 pretrage.forEach(div => {
@@ -57,6 +58,13 @@ const MarketingAjax = (() => {
                         const klikoviDiv = divNekretnine.querySelector(`#${divId}`);
                         if(klikoviDiv) klikoviDiv.textContent = `KLIKOVI: ${nekretnina.klikovi}`;
                     })
+                }
+                else
+                {
+                    const klikovi = divNekretnine.querySelectorAll('div[id^="klikovi"]');
+                    klikovi.forEach(div => {
+                        div.style.display = 'none';
+                    });
                 }
             }
             if(izvrseno2) {
