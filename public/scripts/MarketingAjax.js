@@ -21,7 +21,7 @@ const MarketingAjax = (() => {
                     if(pretrageDiv) pretrageDiv.textContent = `PRETRAGE: ${nekretnina.pretrage}`;
                 })
             }
-            else
+            else if(xhttp.readyState == 4 && xhttp.status!=200)
             {
                 const pretrage = divNekretnine.querySelectorAll('div[id^="pretrage"]');
                 pretrage.forEach(div => {
@@ -57,7 +57,7 @@ const MarketingAjax = (() => {
                         if(klikoviDiv) klikoviDiv.textContent = `KLIKOVI: ${nekretnina.klikovi}`;
                     })
                 }
-                else
+                else if(xhttp.readyState == 4 && xhttp.status!=200)
                 {
                     const klikovi = divNekretnine.querySelectorAll('div[id^="klikovi"]');
                     klikovi.forEach(div => {

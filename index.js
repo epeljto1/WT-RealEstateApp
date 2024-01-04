@@ -49,6 +49,7 @@ fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,d
                 resolve();
             });
         }
+        else {resolve();}
         });
     });
 
@@ -148,7 +149,7 @@ app.put('/korisnik',function(req,res){
             const korisnik = korisnici.find(k => k.username == req.session.username);
             if(req.body.ime) korisnik.ime = req.body.ime;
             if(req.body.prezime) korisnik.prezime = req.body.prezime;
-            if(req.body.username) korisnik.username = req.body.username;
+            if(req.body.username) {korisnik.username = req.body.username; req.session.username = req.body.username};
             if(req.body.password) korisnik.password = req.body.password;
             fs.writeFile(path.join(__dirname, 'public', 'data', 'korisnici.json'), JSON.stringify(korisnici,null,2), function (err) {
                 if (err) throw err;
