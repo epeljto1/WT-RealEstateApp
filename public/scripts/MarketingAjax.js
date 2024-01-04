@@ -15,7 +15,6 @@ const MarketingAjax = (() => {
             {
                 const data = JSON.parse(xhttp.responseText);  
                 const nekretnine = data.nizNekretnina;
-                console.log(nekretnine);
                 nekretnine.forEach(nekretnina => {
                     const divId = `pretrage-${nekretnina.id}`;
                     const pretrageDiv = divNekretnine.querySelector(`#${divId}`);
@@ -32,10 +31,9 @@ const MarketingAjax = (() => {
         }
         if(izvrseno) {
         xhttp.setRequestHeader("Content-Type", "application/json");
-        console.log("prvo");
         xhttp.send(JSON.stringify(reqData)); 
         }
-        else {console.log("drugo"); xhttp.send();}
+        else {xhttp.send();}
         izvrseno = false;
     
     },500);
