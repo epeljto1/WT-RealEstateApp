@@ -48,6 +48,14 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
         cijena.className = "cijena";
         cijena.innerHTML = "<b>Cijena</b>: "+nekretnine[i].cijena+" KM";
         div.appendChild(cijena);
+        const lokacija = document.createElement("p");
+        lokacija.className = "lokacija";
+        lokacija.innerHTML = "<b>Lokacija</b>: "+nekretnine[i].lokacija;
+        div.appendChild(lokacija);
+        const godina = document.createElement("p");
+        godina.className = "godina";
+        godina.innerHTML = "<b>Godina izgradnje</b>: "+nekretnine[i].godina_izgradnje;
+        div.appendChild(godina);
         const form = document.createElement("form");
         const button = document.createElement("button");
         button.type = "button";
@@ -112,6 +120,11 @@ function detalji(nekId)
     MarketingAjax.klikNekretnina(nekId);
     const nek = document.getElementById(`nekretnina-${nekId}`);
     nek.style.width = "500px";
+    const lok = nek.querySelector('p.lokacija');
+    lok.style.display = 'block';
+    const god = nek.querySelector('p.godina');
+    god.style.display = 'block';
+
 }
 
 const divStan = document.getElementById("stan");

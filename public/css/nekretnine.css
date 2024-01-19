@@ -59,6 +59,20 @@ div p.cijena
     margin-right: 25px;
 }
 
+div p.lokacija
+{
+    text-align: right;
+    margin: 20px 25px 2px;
+    display: none;
+}
+
+div p.godina
+{
+    text-align: right;
+    margin: 20px 25px 2px;
+    display: none;
+}
+
 button
 {
     background-color: #fdf1d3;

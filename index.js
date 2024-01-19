@@ -6,6 +6,8 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const port = 3000;
 const app = express();
+const db = require('./database/db.js');
+const { Op } = require('sequelize');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,52 +38,61 @@ app.get('/profil.html',function(req,res){
     res.sendFile(path.join(__dirname,'public','html','profil.html'));
 });
 
-fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,data){
-    if(err) throw err;
-    const korisnici = JSON.parse(data);
+async function hashPasswordsAndUpdateTable() {
+    try {
+        const korisnici = await db.Korisnik.findAll();
 
-    const hashPromises = korisnici.map((korisnik) => {
-        return new Promise((resolve, reject) => {
-            if(!korisnik.password.startsWith('$2b$')) {
-            bcrypt.hash(korisnik.password, 10, function (err, hash) {
-                if (err) throw err;
-                korisnik.password = hash;
-                resolve();
+        const hashPromises = korisnici.map((korisnik) => {
+            return new Promise(async (resolve, reject) => {
+                if (!korisnik.password.startsWith('$2b$')) {
+                    try {
+                        const hash = await bcrypt.hash(korisnik.password, 10);
+                        korisnik.password = hash;
+                        await korisnik.save();
+                        resolve();
+                    } catch (hashError) {
+                        reject(hashError);
+                    }
+                } else {
+                    resolve();
+                }
             });
-        }
-        else {resolve();}
         });
-    });
 
-    Promise.all(hashPromises)
-    .then(() => {
-        fs.writeFile(path.join(__dirname, 'public', 'data', 'korisnici.json'), JSON.stringify(korisnici,null,2), function (err) {
-            if (err) throw err;
-        });
-    })
-})
+        await Promise.all(hashPromises);
 
-app.post('/login',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,data){
-        if(err) throw err;
-        const korisnici = JSON.parse(data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 
-        const korisnik = korisnici.find(k => k.username == req.body.username);
-        if(korisnik)
-        {
-            bcrypt.compare(req.body.password,korisnik.password,function(err,result){
-                if(err) throw err;
-        if(result){
-        req.session.username = korisnik.username;
-        res.status(200).json({"poruka":"Uspješna prijava"});
+hashPasswordsAndUpdateTable();
+
+app.post('/login', async function (req, res) {
+    try {
+        const korisnik = await db.Korisnik.findOne({
+            where: {
+                username: req.body.username
             }
-            else
-            res.status(401).json({"greska":"Neuspješna prijava"})
-        })}
-        else 
-        res.status(401).json({"greska":"Neuspješna prijava"});
-    })
-})
+        });
+
+        if (korisnik) {
+            const result = await bcrypt.compare(req.body.password, korisnik.password);
+
+            if (result) {
+                req.session.username = korisnik.username;
+                res.status(200).json({ "poruka": "Uspješna prijava" });
+            } else {
+                res.status(401).json({ "greska": "Neuspješna prijava" });
+            }
+        } else {
+            res.status(401).json({ "greska": "Neuspješna prijava" });
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        res.status(500).json({ "greska": "Greška prilikom prijave" });
+    }
+});
 
 app.post('/logout',function(req,res)
 {
@@ -94,18 +105,28 @@ app.post('/logout',function(req,res)
     res.status(401).json({"greska":"Neautorizovan pristup"});
 })
 
-app.get('/korisnik',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,data){
-        if(err) throw err;
-        if(req.session.username==null)
-        res.status(401).json({"greska":"Neautorizovan pristup"});
-        else {
-        const korisnici = JSON.parse(data);
-        const korisnik = korisnici.find(k => k.username == req.session.username);
-        res.status(200).json(korisnik);
+app.get('/korisnik', async function (req, res) {
+    try {
+        if (req.session.username == null) {
+            return res.status(401).json({ "greska": "Neautorizovan pristup" });
         }
-    })
-})
+
+        const korisnik = await db.Korisnik.findOne({
+            where: {
+                username: req.session.username
+            }
+        });
+
+        if (korisnik) {
+            return res.status(200).json(korisnik);
+        } else {
+            return res.status(401).json({ "greska": "Neautorizovan pristup" });
+        }
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return res.status(500).json({ "greska": "Greška prilikom dohvata korisnika" });
+    }
+});
 
 app.post('/upit',function(req,res){
     fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,datak){
@@ -139,83 +160,132 @@ app.post('/upit',function(req,res){
     })
 })
 
-app.put('/korisnik',function(req,res){
-    if(req.session.username==null)
-    res.status(401).json({"greska":"Neautorizovan pristup"});
-    else
-    {
-        fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,data){
-            const korisnici = JSON.parse(data);
-            const korisnik = korisnici.find(k => k.username == req.session.username);
-            if(req.body.ime) korisnik.ime = req.body.ime;
-            if(req.body.prezime) korisnik.prezime = req.body.prezime;
-            if(req.body.username) {korisnik.username = req.body.username; req.session.username = req.body.username;}
-            if(req.body.password) korisnik.password = req.body.password;
-            fs.writeFile(path.join(__dirname, 'public', 'data', 'korisnici.json'), JSON.stringify(korisnici,null,2), function (err) {
-                if (err) throw err;
-                res.status(200).json({"poruka":"Podaci su uspješno ažurirani"});
-            });
-        })
+app.put('/korisnik', async function (req, res) {
+    try {
+        if (req.session.username == null) {
+            return res.status(401).json({ "greska": "Neautorizovan pristup" });
+        }
+
+        const korisnik = await db.Korisnik.findOne({
+            where: {
+                username: req.session.username
+            }
+        });
+
+        if (req.body.ime) korisnik.ime = req.body.ime;
+        if (req.body.prezime) korisnik.prezime = req.body.prezime;
+        if (req.body.username) {
+            korisnik.username = req.body.username;
+            req.session.username = req.body.username;
+        }
+        if (req.body.password) {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            korisnik.password = hashedPassword;
+        }
+
+        await korisnik.save();
+
+        return res.status(200).json({ "poruka": "Podaci su uspješno ažurirani" });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return res.status(500).json({ "greska": "Greška prilikom ažuriranja podataka" });
+    }
+});
+
+app.get('/nekretnine',async function(req,res){
+    try {
+        const nekretnine = await db.Nekretnina.findAll(
+            {
+                include: [
+                    {
+                        model: db.Upit,
+                        as: 'upiti',
+                        attributes: ['tekst_upita'],
+                    },
+                ],
+            }
+        );
+        res.status(200).json(nekretnine);
+    } catch (err) {
+        console.error('Error fetching nekretnine:', err);
+        res.status(500).json({"greska": "Greška prilikom dohvata nekretnina"});
     }
 })
 
-app.get('/nekretnine',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','nekretnine.json'),function(err,data){
-        if(err) throw err;
-        res.status(200).json(JSON.parse(data));
-    })
+app.post('/marketing/nekretnine',async function(req,res){
+    try {
+        const nekretnineIds = req.body.nizNekretnina;
+        await db.Nekretnina.update(
+            { pretrage: db.sequelize.literal('pretrage + 1') },
+            {
+                where: {
+                    id: {
+                        [Op.in]: nekretnineIds,
+                    },
+                },
+            }
+        );
+
+        res.status(200).send();
+    } catch (err) {
+        console.error('Error updating pretrage:', err);
+        res.status(500).json({"greska": "Greška"});
+    }
 })
 
-app.post('/marketing/nekretnine',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
-        if(err) throw err;
-        const pretrageDat = JSON.parse(data);
-        req.body.nizNekretnina.forEach((id)=>{
-            const index = pretrageDat.findIndex((item)=>item.id==id);
-            pretrageDat[index].pretrage++;
-        })
-        const updatedPretrage = JSON.stringify(pretrageDat,null,2);
-        fs.writeFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),updatedPretrage,function(err){
-            if(err) throw err;
-            res.status(200).send();
-        })
-    })
-})
-
-app.post('/marketing/nekretnine/:id',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
-        if(err) throw err;
+app.post('/marketing/nekretnine/:id', async function(req,res){
+    try {
         const theid = req.params.id;
-        const klikoviDat = JSON.parse(data);
-        const index = klikoviDat.findIndex((item)=>item.id==theid)
-        klikoviDat[index].klikovi++;
-        const updatedKlikovi = JSON.stringify(klikoviDat,null,2);
-        fs.writeFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),updatedKlikovi,function(err){
-            if(err) throw err;
-            res.status(200).send();
-        })
-    })
+        await db.Nekretnina.update(
+            { klikovi: db.sequelize.literal('klikovi + 1') },
+            {
+                where: {
+                    id: theid,
+                },
+            }
+        );
+        res.status(200).send();
+    } catch (err) {
+        console.error('Error updating klikovi:', err);
+        res.status(500).json({"greska": "Greška"});
+    }
 })
 
 let oldReq = [];
-app.post('/marketing/osvjezi',function(req,res){
+app.post('/marketing/osvjezi',async function(req,res){
+    try {
     if(req.body.nizNekretnina)
-    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
-        if(err) throw err;
+    {
+        const updatedData = await db.Nekretnina.findAll({
+            where: {
+                id: {
+                    [Op.in]: req.body.nizNekretnina,
+                },
+            },
+        });
         oldReq = [...req.body.nizNekretnina];
-        const pik = JSON.parse(data);
-        const filtered = pik.filter(item => req.body.nizNekretnina.includes(item.id));
-        const resData = {nizNekretnina: filtered};
+        const resData = { nizNekretnina: updatedData };
         res.status(200).json(resData);
-    })
+    }
     else
-    fs.readFile(path.join(__dirname,'public','data','pretrageiklikovi.json'),function(err,data){
-        if(err) throw err;
-        const pik = JSON.parse(data);
-        const filtered = pik.filter(item => oldReq.includes(item.id));
-        const resData = {nizNekretnina: filtered};
+    {
+        const updatedData = await db.Nekretnina.findAll({
+            where: {
+                id: {
+                    [Op.in]: oldReq,
+                },
+            },
+        });
+        const resData = { nizNekretnina: updatedData };
         res.status(200).json(resData);
-    })
+
+    }
+}
+catch (err)
+{
+    console.error('Error', err);
+    res.status(500).json({"greska": "Greška"});
+}
 })
 
 app.listen(port,function(){
