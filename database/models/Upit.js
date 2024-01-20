@@ -7,9 +7,6 @@ module.exports = function(sequelize,DataTypes){
             autoIncrement: true,
             primaryKey: true
         },
-        korisnik_id: {
-            type: Sequelize.INTEGER
-        },
         tekst_upita: {
             type: Sequelize.STRING
         }

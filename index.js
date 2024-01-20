@@ -288,6 +288,38 @@ catch (err)
 }
 })
 
+app.get('/nekretnine/:id',async function(req,res){
+    try {
+        theId = req.params.id;
+        const nekretnina = await db.Nekretnina.findOne(
+            {
+                where: { id: theId },
+                include: [
+                    {
+                        model: db.Upit,
+                        as: 'upiti',
+                        attributes: ['tekst_upita'],
+                        include: [
+                            {
+                                model: db.Korisnik,
+                                as: 'korisnik',
+                                attributes: ['username'],
+                            },
+                        ],
+                    },
+                ],
+            }
+        );
+        if(nekretnina)
+        res.status(200).json(nekretnina);
+        else
+        res.status(400).json({"greska":`Nekretnina sa id-em ${theId} ne postoji`});
+    } catch (err) {
+        console.error('Error fetching nekretnine:', err);
+        res.status(500).json({"greska": "Greška prilikom dohvata nekretnina"});
+    }
+});
+
 app.listen(port,function(){
     console.log("Server listening on PORT",port);
 });

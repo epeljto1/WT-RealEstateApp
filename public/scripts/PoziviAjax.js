@@ -125,12 +125,34 @@ const PoziviAjax = (() => {
         xhttp.send();
     }
 
+    function impl_getNekretninaById(nekretnina_id, fnCallback)
+    {
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.open("GET",`http://localhost:3000/nekretnine/${nekretnina_id}`,true);
+        xhttp.onreadystatechange = function()
+        {
+            if(xhttp.readyState==4 && xhttp.status==200)
+            {
+                const data = JSON.parse(xhttp.responseText);
+                fnCallback(null,data);
+            }
+            else if(xhttp.readyState==4)
+            {
+                const error = JSON.parse(xhttp.responseText);
+                fnCallback(error,null);
+            }
+        }
+        xhttp.send();
+    }
+
     return {
         postLogin: impl_postLogin,
         postLogout: impl_postLogout,
         getKorisnik: impl_getKorisnik,
         putKorisnik: impl_putKorisnik,
         postUpit: impl_postUpit,
-        getNekretnine: impl_getNekretnine
+        getNekretnine: impl_getNekretnine,
+        getNekretninaById: impl_getNekretninaById
     };
 })();

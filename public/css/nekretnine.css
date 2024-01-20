@@ -86,6 +86,22 @@ button:hover
     background-color: #ff9900;
 }
 
+#det
+{
+    background-color: #fdf1d3;
+    float: right;
+    margin-right: 25px;
+    height: 30px;
+    width: 150px;
+    display: none;
+
+}
+
+#det:hover
+{
+    background-color: #ff9900;
+}
+
 #kuca
 {
     margin: 0px 50px;

@@ -13,9 +13,9 @@ function inicializacija()
     var upitiListaPromisea=[];
     return new Promise(function(resolve,reject){
 
-        upitiListaPromisea.push(db.Upit.create({korisnik_id:1,tekst_upita:'Nullam eu pede mollis pretium.'}));
-        upitiListaPromisea.push(db.Upit.create({korisnik_id:2,tekst_upita:'Phasellus viverra nulla.'}));
-        upitiListaPromisea.push(db.Upit.create({korisnik_id:2,tekst_upita:'Integer tincidunt.'}));
+        upitiListaPromisea.push(db.Upit.create({tekst_upita:'Nullam eu pede mollis pretium.'}));
+        upitiListaPromisea.push(db.Upit.create({tekst_upita:'Phasellus viverra nulla.'}));
+        upitiListaPromisea.push(db.Upit.create({tekst_upita:'Integer tincidunt.'}));
 
         Promise.all(upitiListaPromisea)
         .then(function(upiti){
@@ -59,8 +59,18 @@ function inicializacija()
                 });
             }));
             Promise.all(nekretnineListaPromisea).then(function(){
-                korisniciListaPromisea.push(db.Korisnik.create({ime:'Neko',prezime:'Nekic',username:'username1',password:'hashPassworda1'}));
-                korisniciListaPromisea.push(db.Korisnik.create({ime:'Neko2',prezime:'Nekic2',username:'username2',password:'hashPassworda2'}));
+                korisniciListaPromisea.push(db.Korisnik.create({ime:'Neko',prezime:'Nekic',username:'username1',password:'hashPassworda1'}).
+                then(function(k){
+                    return k.setUpiti([upit1]).then(function(){
+                        return new Promise(function(resolve,reject){resolve(k);});
+                    });
+                }));
+                korisniciListaPromisea.push(db.Korisnik.create({ime:'Neko2',prezime:'Nekic2',username:'username2',password:'hashPassworda2'}).
+                then(function(k){
+                    return k.setUpiti([upit2,upit3]).then(function(){
+                        return new Promise(function(resolve,reject){resolve(k);});
+                    });
+                }));;
                 Promise.all(korisniciListaPromisea).then(function(korisnici){resolve(korisnici);}).catch(function(err){console.log("Korisnici greska "+err);});
 
             }).catch(function(err){console.log("Nekretnine greska "+err);});

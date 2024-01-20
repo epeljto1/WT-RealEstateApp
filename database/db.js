@@ -16,5 +16,7 @@ db.Upit = require(__dirname + '/models/Upit')(sequelize, Sequelize);
 db.Nekretnina = require(__dirname + '/models/Nekretnina')(sequelize, Sequelize);
 
 db.Nekretnina.hasMany(db.Upit,{as:'upiti'});
+db.Korisnik.hasMany(db.Upit,{as:'upiti'});
+db.Upit.belongsTo(db.Korisnik, { as: 'korisnik', foreignKey: 'KorisnikId' });
 
 module.exports = db;

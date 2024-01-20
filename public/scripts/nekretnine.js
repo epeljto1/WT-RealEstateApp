@@ -56,8 +56,14 @@ function spojiNekretnine(divReferenca, instancaModula, tip_nekretnine) {
         godina.className = "godina";
         godina.innerHTML = "<b>Godina izgradnje</b>: "+nekretnine[i].godina_izgradnje;
         div.appendChild(godina);
+        const detbut = document.createElement("button");
+        detbut.type = "button";
+        detbut.id = "det";
+        detbut.innerText = "OTVORI DETALJE";
+        div.appendChild(detbut);
         const form = document.createElement("form");
         const button = document.createElement("button");
+        detbut.onclick = function() {otvoridetalje(nekretnine[i].id)};
         button.type = "button";
         button.innerText = "DETALJI";
         button.onclick = function() {detalji(nekretnine[i].id)};
@@ -124,7 +130,14 @@ function detalji(nekId)
     lok.style.display = 'block';
     const god = nek.querySelector('p.godina');
     god.style.display = 'block';
+    const det = nek.querySelector('#det');
+    det.style.display = 'block';
+}
 
+function otvoridetalje(nekId)
+{
+    localStorage.setItem('nekId', nekId);
+    window.location.href = 'detalji.html';
 }
 
 const divStan = document.getElementById("stan");
