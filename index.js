@@ -128,37 +128,39 @@ app.get('/korisnik', async function (req, res) {
     }
 });
 
-app.post('/upit',function(req,res){
-    fs.readFile(path.join(__dirname,'public','data','korisnici.json'),function(err,datak){
-        if(err) throw err;
-        if(req.session.username==null)
-        res.status(401).json({"greska":"Neautorizovan pristup"});
-        else
-        {
-            const korisnici = JSON.parse(datak);
-            korisnik = korisnici.find(k => k.username == req.session.username);
-            fs.readFile(path.join(__dirname,'public','data','nekretnine.json'),function(err,datan){
-                if(err) throw err;
-                const nekretnine = JSON.parse(datan);
-                const nekretnina = nekretnine.find(n => n.id == req.body.nekretnina_id);
-                if(nekretnina)
-                {
-                    const noviUpit = {
-                        korisnik_id : korisnik.id,
-                        tekst_upita : req.body.tekst_upita
-                    };
-                    (nekretnina.upiti).push(noviUpit);
-                    fs.writeFile(path.join(__dirname, 'public', 'data', 'nekretnine.json'), JSON.stringify(nekretnine,null,2), function (err) {
-                        if (err) throw err;
-                        res.status(200).json({"poruka":"Upit je uspješno dodan"});
-                    });
-                }
-                else
-                res.status(400).json({"greska":`Nekretnina sa id-em ${req.body.nekretnina_id} ne postoji`});
-            })
+app.post('/upit', async function (req, res) {
+    try {
+        if (!req.session.username) {
+            return res.status(401).json({ "greska": "Neautorizovan pristup" });
         }
-    })
-})
+
+        const username = req.session.username;
+
+        const korisnik = await db.Korisnik.findOne({
+            where: { username: username }
+        });
+
+        const nekretnina = await db.Nekretnina.findOne({
+            where: { id: req.body.nekretnina_id }
+        });
+
+        if (!nekretnina) {
+            return res.status(400).json({ "greska": `Nekretnina sa id-em ${req.body.nekretnina_id} ne postoji` });
+        }
+
+        const noviUpit = await db.Upit.create({
+            tekst_upita: req.body.tekst_upita,
+            NekretninaId: nekretnina.id,
+            KorisnikId: korisnik.id
+        });
+
+        return res.status(200).json({ "poruka": "Upit je uspješno dodan" });
+
+    } catch (error) {
+        console.error("Error during upit:", error);
+        return res.status(500).json({ "greska": "Greška prilikom dodavanja upita" });
+    }
+});
 
 app.put('/korisnik', async function (req, res) {
     try {

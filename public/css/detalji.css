@@ -67,3 +67,23 @@ td
     padding: 12px 12px;
 }
 
+#upit
+{
+    margin: 15px 50px;
+    width: 600px;
+    height: 100px;
+}
+
+button
+{
+    background-color: #fdf1d3;
+    margin: 8px 115px 8px;
+    height: 60px;
+    width: 70px;
+}
+
+button:hover
+{
+    background-color: #ff9900;
+}
+
